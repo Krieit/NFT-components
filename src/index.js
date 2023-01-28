@@ -8,16 +8,14 @@ import { showMintModal } from "./components/MintModal.js";
 import { init } from "./mint";
 import { dirtyFixConnectWalletUI } from "./utils";
 
-// Anonymous analytics for Buildship to know how many users
 const sendAnonymousAnalytics = () => {
     if (window.location.host.includes("localhost"))
         return
-
     try {
         amplitude.getInstance().init("e2aff4bf282355999267edb40276222a")
-        amplitude.getInstance().setOptOut(window.DEFAULTS?.analyticsOptOut ?? false)
-        amplitude.getInstance().logEvent("Opened minting website", {
-            "url": window.location.host.replace('www.', '')
+        amplitude.getInstance().setOptOut(window.DEFAULTS?.analyticsOptOut ?? true)
+        amplitude.getInstance().logEvent("Opened a minting website", {
+            "url": window.location.host.replace('www.', 'https')
         })
         amplitude.getInstance().setDomain(window.location.host.replace('www.', ''))
     } catch (e) {
@@ -34,7 +32,7 @@ const createDOMElement = () => {
     return div;
 }
 
-const renderAppContainer = () => {
+const renderAppContainers = () => {
     render(<App />, createDOMElement());
 }
 
@@ -49,9 +47,6 @@ const renderAndInit = () => {
         return
     }
     init()
-
-    // TODO: remove this when migrated to @buildship/web3-login or forked Web3Modal
-    // Puts "custom-metamask" provider as the first option
     dirtyFixConnectWalletUI()
     sendAnonymousAnalytics()
 }
